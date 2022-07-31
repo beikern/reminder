@@ -1,0 +1,20 @@
+[
+  {
+    "httpRequest": {
+      "path": "/valid",
+      "method": "POST"
+    },
+    "httpResponse": {
+      "body": "Reminder accepted"
+    }
+  },
+  {
+    "httpRequest": {
+      "path": "/invalid"
+    },
+    "httpResponse": {
+      "statusCode": 404,
+      "reasonPhrase": "Not Found"
+    }
+  }
+]

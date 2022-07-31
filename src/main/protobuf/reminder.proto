@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option java_multiple_files = true;
+option java_package = "com.valsea.reminder";
+option java_outer_classname = "ReminderProto";
+
+
+service ReminderService {
+  rpc Register (RegisterRequest) returns (RegisterResponse) {}
+
+  rpc CreateReminders (CreateRemindersRequest) returns (CreateRemindersResponse) {}
+
+  rpc ListReminders (ListRemindersRequest) returns (stream Reminder) {}
+}
+
+message RegisterRequest {
+  Service service = 1;
+}
+
+message RegisterResponse {
+  string message = 1;
+}
+
+message CreateRemindersRequest {
+  repeated CreateReminderRequest reminders = 1;
+}
+
+message CreateReminderRequest {
+  string reminder_id = 1;
+  string service_id = 2;
+  ScheduledTime scheduled_time = 3;
+  optional bytes data = 4;
+}
+
+message CreateRemindersResponse {
+  repeated string messages = 1;
+}
+
+message ListRemindersRequest {
+  repeated string reminder_ids = 1;
+  repeated string service_ids = 2;
+  optional ReminderStatus status = 3;
+}
+
+message Service {
+  string service_id = 1;
+  string endpoint = 2;
+  int32 patience_in_mins = 3;
+}
+
+message Reminder {
+  string reminder_id = 1;
+  ScheduledTime scheduled_time = 2;
+  ReminderStatus status = 3;
+  optional bytes data = 4;
+}
+
+message ScheduledTime {
+  oneof sealed_value {
+    CronTime cron = 1;
+    OnlyOnce once = 2;
+  }
+}
+
+message CronTime {
+  string expression = 1;
+}
+
+message OnlyOnce {
+  google.protobuf.Timestamp when = 1;
+}
+
+enum ReminderStatus {
+  SCHEDULED = 0;
+  DELIVERED = 1;
+  UNDELIVERED = 2;
+}
